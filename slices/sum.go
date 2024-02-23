@@ -1,17 +1,21 @@
 package main
 
 func Sum(numbers []int) int {
-	sum := 0
-	for _, number := range numbers {
-		sum += number
-	}
-	return sum
+	return Reduce(numbers, func(accumulator, currentValue int) int {
+		return accumulator + currentValue
+	}, 0)
 }
 
 func SumAll(slices ...[]int) []int {
-	var sums []int
-	for _, numbers := range slices {
-		sums = append(sums, Sum(numbers))
+	return Reduce(slices, func(acc, curr []int) []int {
+		return append(acc, Sum(curr))
+	}, []int{})
+}
+
+func Reduce[T, U any](collection []T, acc func(U, T) U, initialValue U) U {
+	result := initialValue
+	for _, item := range collection {
+		result = acc(result, item)
 	}
-	return sums
+	return result
 }
