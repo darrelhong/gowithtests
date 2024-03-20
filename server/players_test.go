@@ -13,7 +13,7 @@ import (
 type StubPlayerStore struct {
 	scores   map[string]int
 	winCalls []string
-	league   []Player
+	league   League
 }
 
 func (s *StubPlayerStore) GetPlayerScore(name string) int {
@@ -25,7 +25,7 @@ func (s *StubPlayerStore) RecordWin(name string) {
 	s.winCalls = append(s.winCalls, name)
 }
 
-func (s *StubPlayerStore) GetLeague() []Player {
+func (s *StubPlayerStore) GetLeague() League {
 	return s.league
 }
 
@@ -136,7 +136,7 @@ func TestLeague(t *testing.T) {
 
 		got := getLeagueFromResponse(t, response.Body)
 		if response.Result().Header.Get("content-type") != "application/json" {
-			t.Errorf("response did not have content-type of application/json, got %v", response.Result().Header)
+			t.Errorf("response did not have content-type of application/json, got %v", response.Result().Header.Get("content-type"))
 		}
 		assertStatus(t, response.Code, http.StatusOK)
 		assertLeague(t, got, wantedLeague)
